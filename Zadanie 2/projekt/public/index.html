@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektro-Bud Magazyn</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #222;
+        }
+
+        header {
+            background-color: #1a4e8a;
+            color: white;
+            padding: 14px 24px;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            margin-top: 3px;
+            opacity: 0.8;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        .pasek-gory {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        #wyszukaj {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            width: 260px;
+        }
+
+        #btn-dodaj {
+            padding: 8px 16px;
+            background-color: #1a4e8a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        #btn-dodaj:hover {
+            background-color: #133d6e;
+        }
+
+        /* tabela z produktami */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #1a4e8a;
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
+        }
+
+        td {
+            padding: 9px 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* wiersze z mala iloscia towaru - zaznaczone na pomaranczowo */
+        .mala-ilosc {
+            background-color: #fff3cd;
+        }
+
+        .mala-ilosc:hover {
+            background-color: #ffe8a1;
+        }
+
+        .akcje {
+            display: flex;
+            gap: 6px;
+        }
+
+        .akcje button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .akcje button:first-child {
+            background-color: #4a90d9;
+            color: white;
+        }
+
+        .akcje button:first-child:hover {
+            background-color: #357abd;
+        }
+
+        .usun-btn {
+            background-color: #d9534f !important;
+            color: white !important;
+        }
+
+        .usun-btn:hover {
+            background-color: #b94440 !important;
+        }
+
+        .brak {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            background: white;
+        }
+
+        /* formularz */
+        #formularz-kontener {
+            display: none;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        #formularz-tytul {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #1a4e8a;
+        }
+
+        .wiersz-formularza {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .pole {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .pole label {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .pole input,
+        .pole select {
+            padding: 7px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .pole input:focus,
+        .pole select:focus {
+            outline: none;
+            border-color: #1a4e8a;
+        }
+
+        .przyciski-formularza {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        #btn-zapisz {
+            padding: 8px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        #btn-zapisz:hover {
+            background-color: #218838;
+        }
+
+        #btn-anuluj {
+            padding: 8px 16px;
+            background-color: #888;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        #btn-anuluj:hover {
+            background-color: #666;
+        }
+
+        .legenda {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 8px;
+        }
+
+        .legenda span {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-color: #fff3cd;
+            border: 1px solid #ccc;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Elektro-Bud – System Magazynowy</h1>
+    <p>Zarządzanie bazą towarów</p>
+</header>
+
+<main>
+
+    <!-- formularz dodawania/edycji -->
+    <div id="formularz-kontener">
+        <div id="formularz-tytul">Dodaj nowy produkt</div>
+
+        <div class="wiersz-formularza">
+            <div class="pole">
+                <label for="pole-ean">Kod EAN</label>
+                <input type="text" id="pole-ean" placeholder="np. 5901234123457">
+            </div>
+            <div class="pole">
+                <label for="pole-nazwa">Nazwa produktu</label>
+                <input type="text" id="pole-nazwa" placeholder="np. Kabel NYM-J 3x1.5mm">
+            </div>
+            <div class="pole">
+                <label for="pole-kategoria">Kategoria</label>
+                <select id="pole-kategoria">
+                    <option value="">-- wybierz --</option>
+                    <option value="kable">Kable</option>
+                    <option value="gniazdka">Gniazdka</option>
+                    <option value="bezpieczniki">Bezpieczniki</option>
+                    <option value="narzedzia">Narzędzia</option>
+                    <option value="inne">Inne</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="wiersz-formularza">
+            <div class="pole">
+                <label for="pole-miejsce">Miejsce w magazynie</label>
+                <input type="text" id="pole-miejsce" placeholder="np. S1-R2-P3">
+            </div>
+            <div class="pole">
+                <label for="pole-ilosc">Ilość (szt.)</label>
+                <input type="number" id="pole-ilosc" min="0" placeholder="0">
+            </div>
+            <div class="pole">
+                <label for="pole-cena">Cena (zł)</label>
+                <input type="number" id="pole-cena" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
+
+        <div class="przyciski-formularza">
+            <button id="btn-zapisz">Zapisz</button>
+            <button id="btn-anuluj">Anuluj</button>
+        </div>
+    </div>
+
+    <!-- pasek gory z wyszukiwarka i przyciskiem dodaj -->
+    <div class="pasek-gory">
+        <input type="text" id="wyszukaj" placeholder="Szukaj po nazwie, EAN lub kategorii...">
+        <button id="btn-dodaj">+ Dodaj produkt</button>
+    </div>
+
+    <!-- tutaj laduje sie lista produktow -->
+    <div id="lista-produktow"></div>
+
+    <p class="legenda"><span></span> – produkt o niskim stanie (≤ 2 szt.)</p>
+
+</main>
+
+<script src="main.js"></script>
+
+</body>
+</html>
